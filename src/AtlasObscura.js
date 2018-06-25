@@ -23,10 +23,9 @@ class AtlasObscura {
 					this.allPoints = eval(matches[1]);
 					return callback(null, this.allPoints);
 				})
-			// .catch(function (ex) {
-			// 	console.log('Parsing failed', ex);
-			// 	callback(ex);
-			// });
+			.catch(function (ex) {
+				callback(ex);
+			});
 		}
 	}
 	
@@ -61,7 +60,7 @@ class AtlasObscura {
 				return callback(null, json);
 			})
 			.catch(function (ex) {
-				console.log('Parsing failed', ex)
+				callback(ex);
 			});
 	}
 }

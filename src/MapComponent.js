@@ -154,6 +154,10 @@ class MapComponent extends React.Component {
 				defaultCenter={{lat: 41.4413664, lng: -95.9141791}}
 				defaultOptions={this.options}
 			>
+				{directions && <DirectionsRenderer directions={directions}/>}
+				
+				{paths && <Polygon paths={paths}/>}
+				
 				{markers && markers.length && markers.map((marker) => {
 					return <Marker
 						key={ marker.id }
@@ -166,7 +170,6 @@ class MapComponent extends React.Component {
 						    scale: 2,
 						    strokeColor: 'red',
 						    strokeWeight: 14
-						
 					    }}
 					/>
 				})}
@@ -178,7 +181,11 @@ class MapComponent extends React.Component {
 					<a href={infoWindow.url} target="_blank" className={classes.infoWindow}>
 						{infoWindow.thumbnail_url_3x2 &&
 						<div className={classes.infoWindowThumbnail}>
-							<img className={classes.infoWindowThumbnailImage} src={infoWindow.thumbnail_url_3x2}/>
+							<img
+								alt={infoWindow.title}
+								className={classes.infoWindowThumbnailImage}
+								src={infoWindow.thumbnail_url_3x2}
+							/>
 							<h1 className={classes.infoWindowThumbnailTitle}>{infoWindow.title}</h1>
 						</div>
 						}
@@ -191,10 +198,6 @@ class MapComponent extends React.Component {
 						<p className={classes.infoWindowLink}>Learn more &rsaquo;</p>
 					</a>
 				</InfoWindow>}
-				
-				{paths && <Polygon paths={paths}/>}
-				
-				{directions && <DirectionsRenderer directions={directions}/>}
 			</GoogleMap>
 		);
 	}
