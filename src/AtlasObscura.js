@@ -19,6 +19,7 @@ class AtlasObscura {
 				})
 				.then((html) => {
 					let matches = html.match(/AtlasObscura\.all_places = (.*?);/);
+					// eslint-disable-next-line no-eval
 					this.allPoints = eval(matches[1]);
 					return callback(null, this.allPoints);
 				})
@@ -41,7 +42,8 @@ class AtlasObscura {
 				if (google.maps.geometry.poly.containsLocation(position, polygon)) {
 					results.push({
 						id: point.id,
-						position: position
+						lat: point.lat,
+						lng: point.lng
 					});
 				}
 			});
@@ -56,10 +58,10 @@ class AtlasObscura {
 				return response.json()
 			})
 			.then(function (json) {
-				return callback(json);
+				return callback(null, json);
 			})
 			.catch(function (ex) {
-				console.log('parsing failed', ex)
+				console.log('Parsing failed', ex)
 			});
 	}
 }

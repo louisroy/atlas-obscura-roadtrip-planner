@@ -1,6 +1,5 @@
 /* global google */
 
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
@@ -11,8 +10,6 @@ import FormComponent from './FormComponent';
 import GeoUtils from './GeoUtils';
 import AtlasObscura from './AtlasObscura';
 import * as turf from '@turf/turf'
-
-const drawerWidth = 240;
 
 const styles = theme => ({
 	root: {
@@ -45,6 +42,7 @@ class App extends React.Component {
 	state = {
 		mobileOpen: false,
 		directionsRequest: null,
+		infoWindow: null,
 		markers: []
 	};
 	
@@ -99,31 +97,32 @@ class App extends React.Component {
 		}
 	};
 	
+	onMarkerClick = (ev, id) => {
+		this.setState({
+			infoWindow: null
+		});
+		
+		AtlasObscura.find(id, (err, location) => {
+			if (err) return console.log("Couldn't find with identifier", err);
+			this.setState({
+				infoWindow: location
+			});
+		});
+	};
+	
+	onInfoWindowClose = (ev) => {
+		this.setState({
+			infoWindow: null
+		});
+	};
+	
 	prepareMarkers = () => {
 		if (this.state.paths) {
 			AtlasObscura.findInPaths(this.state.paths, (err, locations) => {
 				if (err) return console.log("Couldn't find in polygon", err);
-				
-				let markers = [];
-				/*
-				locations.forEach((location) => {
-					let marker = new google.maps.Marker({
-						map: map,
-						position: location.position
-					});
-					
-					marker.data = {
-						id: location.id
-					};
-					
-					markers.push(marker);
-				});
-				
-				
 				this.setState({
-					markers: markers
+					markers: locations
 				});
-				*/
 			});
 		}
 	};
@@ -175,7 +174,10 @@ class App extends React.Component {
 				</Hidden>
 				<main className={classes.content}>
 					<MapComponent
+						infoWindow={this.state.infoWindow}
+						onInfoWindowClose={this.onInfoWindowClose.bind(this)}
 						markers={this.state.markers}
+						onMarkerClick={this.onMarkerClick.bind(this)}
 						directions={this.state.directions}
 						paths={this.state.paths}
 						googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}

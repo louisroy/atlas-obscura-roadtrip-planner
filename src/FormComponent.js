@@ -6,7 +6,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Icon from '@material-ui/core/Icon';
-import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -91,6 +90,7 @@ class FormComponent extends React.Component {
 						<TextField
 							placeholder="Starting point"
 							className={classes.waypointField}
+							defaultValue={process.env.NODE_ENV === 'development' && "Quebec City"}
 							name="waypoint"
 							margin="normal"
 						/>
@@ -100,6 +100,7 @@ class FormComponent extends React.Component {
 						<TextField
 							placeholder="Destination"
 							className={classes.waypointField}
+							defaultValue={process.env.NODE_ENV === 'development' && "Burlington VT"}
 							name="waypoint"
 							margin="normal"
 						/>
@@ -154,7 +155,7 @@ class FormComponent extends React.Component {
 						</FormControl>
 					</ExpansionPanelDetails>
 				</ExpansionPanel>
-				<input type="submit"/>
+				<input type="submit" style={{visibility:'hidden'}} />
 			</form>
 		);
 	}
