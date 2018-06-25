@@ -1,6 +1,6 @@
 # Atlas Obscura Roadtrip Planner
 
-Small React webapp that lets you find Atlas Obscura locations along a Google Maps route.
+Small [React](https://reactjs.org/) webapp that lets you find [Atlas Obscura](https://www.atlasobscura.com/) locations along a [Google Maps](https://developers.google.com/maps/documentation/) route.
 
 # Installation
 
