@@ -6,8 +6,8 @@ Small [React](https://reactjs.org/) webapp that lets you find [Atlas Obscura](ht
 
 - Copy over ``.env.sample`` to ``.env.development``
 - Fill in the blanks
-- npm install
+- ``npm install``
 
 # Run
 
-- npm start
+- ``npm start``
