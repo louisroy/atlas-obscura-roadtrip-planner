@@ -2,6 +2,9 @@
 
 Small [React](https://reactjs.org/) webapp that lets you find [Atlas Obscura](https://www.atlasobscura.com/) locations along a [Google Maps](https://developers.google.com/maps/documentation/) route.
 
+# Requirements
+- [Node.js](https://nodejs.org)
+
 # Installation
 
 - Copy over ``.env.sample`` to ``.env.development``
