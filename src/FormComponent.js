@@ -72,8 +72,10 @@ class FormComponent extends React.Component {
 	};
 	
 	render() {
-		const {classes} = this.props;
+		const {classes, initialDestination} = this.props;
 		const {expanded} = this.state;
+		
+		console.log(initialDestination);
 		
 		return (
 			<form
@@ -100,7 +102,7 @@ class FormComponent extends React.Component {
 						<TextField
 							placeholder="Destination"
 							className={classes.waypointField}
-							defaultValue={process.env.NODE_ENV === 'development' && "Burlington VT"}
+							defaultValue={initialDestination}
 							name="waypoint"
 							margin="normal"
 						/>
@@ -163,6 +165,7 @@ class FormComponent extends React.Component {
 
 FormComponent.propTypes = {
 	classes: PropTypes.object.isRequired,
+	initialDestination: PropTypes.string,
 	onSubmit: PropTypes.func.isRequired,
 	onRadiusChange: PropTypes.func.isRequired,
 };

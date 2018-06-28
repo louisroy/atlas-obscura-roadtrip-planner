@@ -7,10 +7,12 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import MapComponent from './MapComponent';
 import FormComponent from './FormComponent';
+import SearchComponent from './SearchComponent';
 import GeoUtils from './GeoUtils';
 import AtlasObscura from './AtlasObscura';
 import * as turf from '@turf/turf'
 
+const drawerWidth = 240;
 const styles = theme => ({
 	root: {
 		flexGrow: 1,
@@ -28,26 +30,45 @@ const styles = theme => ({
 	},
 	toolbar: theme.mixins.toolbar,
 	drawerPaper: {
+		flex: 'none',
+		width: drawerWidth,
 		[theme.breakpoints.up('md')]: {
 			position: 'relative',
 		},
 	},
 	content: {
 		flexGrow: 1,
+		position: 'relative',
 		backgroundColor: theme.palette.background.default,
 	},
+	search: {
+		position: 'absolute',
+		top: theme.spacing.unit,
+		left: theme.spacing.unit
+	}
 });
 
 class App extends React.Component {
 	state = {
+		destinationSubmitted: false,
 		mobileOpen: false,
 		directionsRequest: null,
 		infoWindow: null,
+		initialDestination: null,
 		markers: []
 	};
 	
 	onDrawerToggle = () => {
 		this.setState({mobileOpen: !this.state.mobileOpen});
+	};
+	
+	onDestinationSubmit = (ev) => {
+		ev.preventDefault();
+		
+		this.setState({
+			initialDestination: ev.target['destination'].value,
+			destinationSubmitted: true,
+		});
 	};
 	
 	onFormSubmit = (ev) => {
@@ -142,36 +163,42 @@ class App extends React.Component {
 		
 		return (
 			<div className={classes.root}>
-				<Hidden mdUp>
-					<Drawer
-						variant="temporary"
-						anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-						open={this.state.mobileOpen}
-						onClose={this.onDrawerToggle}
-						classes={{
-							paper: classes.drawerPaper,
-						}}
-						ModalProps={{
-							keepMounted: true, // Better open performance on mobile.
-						}}
-					>
-						<FormComponent ref="form" onSubmit={this.onFormSubmit.bind(this)}/>
-					</Drawer>
-				</Hidden>
-				<Hidden smDown implementation="css">
-					<Drawer
-						variant="permanent"
-						open
-						classes={{
-							paper: classes.drawerPaper,
-						}}
-					>
-						<FormComponent
-							onSubmit={this.onFormSubmit.bind(this)}
-							onRadiusChange={this.onRadiusChange.bind(this)}
-						/>
-					</Drawer>
-				</Hidden>
+				<div style={{display: this.state.destinationSubmitted ? 'block' : 'none'}}>
+					<Hidden mdUp>
+						<Drawer
+							variant="temporary"
+							anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+							open={this.state.mobileOpen && this.state.destinationSubmitted}
+							onClose={this.onDrawerToggle}
+							classes={{
+								paper: classes.drawerPaper,
+							}}
+							ModalProps={{
+								keepMounted: true, // Better open performance on mobile.
+							}}
+						>
+							<FormComponent
+								onSubmit={this.onFormSubmit.bind(this)}
+								onRadiusChange={this.onRadiusChange.bind(this)}
+							/>
+						</Drawer>
+					</Hidden>
+					<Hidden smDown implementation="css">
+						<Drawer
+							variant="persistent"
+							open={ this.state.destinationSubmitted }
+							classes={{
+								paper: classes.drawerPaper,
+							}}
+						>
+							<FormComponent
+								initialDestination={this.state.initialDestination}
+								onSubmit={this.onFormSubmit.bind(this)}
+								onRadiusChange={this.onRadiusChange.bind(this)}
+							/>
+						</Drawer>
+					</Hidden>
+				</div>
 				<main className={classes.content}>
 					<MapComponent
 						infoWindow={this.state.infoWindow}
@@ -185,6 +212,12 @@ class App extends React.Component {
 						containerElement={<div style={{height: `100%`}}/>}
 						mapElement={<div style={{height: `100%`}}/>}
 					/>
+					<div className={classes.search}
+					     style={{display: this.state.destinationSubmitted ? 'none' : 'block'}}>
+						<SearchComponent
+							onSubmit={this.onDestinationSubmit.bind(this)}
+						/>
+					</div>
 				</main>
 			</div>
 		);
