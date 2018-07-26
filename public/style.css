@@ -1,6 +1,67 @@
+*, *:before, *:after {
+	box-sizing: border-box;
+}
+
 html, body, #app {
-	padding:0;
-	margin:0;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:0.8rem;
+}
+
+#app {
+	display: flex;
+}
+
+#search {
+	padding: 10px;
+}
+
+.form-control {
+	display: block;
+}
+
+#search fieldset {
+	border: 1px solid #CCC;
+	margin-bottom: 10px;
+}
+
+#map {
+	flex-grow: 1;
+}
+
+.info-window {
+	width:250px;
+	min-height:50px;
+	text-decoration:none;
+	display:block;
+	color:#000;
+}
+.info-window div {
+	position:relative;
+}
+
+.info-window img {
+	display:block;
 	width:100%;
-	height:100%;
+	height:auto;
+}
+.info-window h1 {
+	position:absolute;
+	width:100%;
+	bottom:0;
+	margin:0;
+	color:#FFF;
+	text-shadow:0px 0px 5px #000;
+	font-size:1.2rem;
+	padding:5px;
+}
+
+.info-window p:last-child {
+	margin-bottom:0;
 }

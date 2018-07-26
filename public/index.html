@@ -8,6 +8,38 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+	<form id="search">
+		<fieldset>
+			<legend>Waypoints</legend>
+			<input type="text" class="form-control" name="waypoint"/>
+			<input type="text" class="form-control" name="waypoint"/>
+			<input type="text" class="form-control" name="waypoint"/>
+			<a href="#" class="btn btn-add-waypoint">Add waypoint</a>
+		</fieldset>
+		
+		<fieldset>
+			<legend>Options</legend>
+			
+			<label for="range">Range (in km)</label>
+			<input type="range" id="range" class="form-control" min="1" max="25"/>
+			
+			<label for="avoid-highways" class="form-control">
+				<input type="checkbox" id="avoid-highways" name="avoid-highways"/>
+				Avoid highways
+			</label>
+			<label for="avoid-tolls" class="form-control">
+				<input type="checkbox" id="avoid-tolls" name="avoid-tolls"/>
+				Avoid tolls
+			</label>
+		</fieldset>
+		
+		<button type="submit" class="btn btn-submit">Submit</button>
+	</form>
+	<div id="map"></div>
+</div>
+<script src="app.js"></script>
+<script src="https://npmcdn.com/@turf/turf/turf.min.js" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=init" async defer></script>
 </body>
 </html>
