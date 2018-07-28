@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Atlas Obscura Roadtrip Planner</title>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+	      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,17 +12,27 @@
 	<form id="search">
 		<fieldset>
 			<legend>Waypoints</legend>
-			<input type="text" class="form-control" name="waypoint"/>
-			<input type="text" class="form-control" name="waypoint"/>
-			<input type="text" class="form-control" name="waypoint"/>
-			<a href="#" class="btn btn-add-waypoint">Add waypoint</a>
+			<div class="waypoints">
+				<div class="form-control">
+					<input type="text" name="waypoint"/>
+					<a href="#" class="btn btn-waypoint-delete"><i class="fas fa-times"></i></a>
+				</div>
+				<div class="form-control">
+					<input type="text" name="waypoint"/>
+					<a href="#" class="btn btn-waypoint-delete"><i class="fas fa-times"></i></a>
+				</div>
+			</div>
+			<a href="#" class="btn btn-add-waypoint"><i class="fas fa-plus"></i> Add waypoint</a>
 		</fieldset>
 		
 		<fieldset>
 			<legend>Options</legend>
 			
-			<label for="range">Range (in km)</label>
-			<input type="range" id="range" class="form-control" min="1" max="25"/>
+			<label for="range">Range</label>
+			<div class="form-control">
+				<input type="range" id="range" min="1" max="50" value="25" />
+				<span class="range-value"></span>km
+			</div>
 			
 			<label for="avoid-highways" class="form-control">
 				<input type="checkbox" id="avoid-highways" name="avoid-highways"/>
@@ -34,12 +44,14 @@
 			</label>
 		</fieldset>
 		
-		<button type="submit" class="btn btn-submit">Submit</button>
+		<div class="actions">
+			<button type="submit" class="btn btn-submit">Submit</button>
+		</div>
 	</form>
 	<div id="map"></div>
 </div>
 <script src="app.js"></script>
 <script src="https://npmcdn.com/@turf/turf/turf.min.js" async defer></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=init" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap" async defer></script>
 </body>
 </html>

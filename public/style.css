@@ -11,24 +11,72 @@ html, body, #app {
 
 body {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size:0.8rem;
+	font-size:62.5%;
 }
 
 #app {
 	display: flex;
+	font-size:0.8rem;
 }
 
 #search {
-	padding: 10px;
+	padding:0.5rem;
+	width: 20rem;
+	background:#FEFEFE;
+	box-shadow:0 0 10px rgba(0, 0, 0, 0.5);
+	position:relative;
+	z-index:1;
+}
+
+.waypoints .form-control:nth-child(-n+2) .btn-waypoint-delete {
+	visibility:hidden;
+}
+
+.waypoints .form-control {
+	padding:0 0 0.5rem 0;
 }
 
 .form-control {
-	display: block;
+	display: flex;
+	flex:1 0 0;
+}
+
+.form-control input[type=text],
+.form-control input[type=range] {
+	vertical-align: middle;
+	flex-grow:1;
+	margin-right:0.5rem;
+	padding:0.2rem;
+}
+
+.btn {
+	display:inline-block;
+	padding:0.2rem 0.8rem;
+	background-color:deepskyblue;
+	color:#FEFEFE;
+	border:0;
+	text-decoration:none;
+	border-radius:0.2rem;
+	font-size:0.9rem;
+	cursor:pointer;
+}
+
+.btn:hover {
+	background-color:lightskyblue;
+}
+
+.btn i {
+	vertical-align: middle;
+}
+
+.actions {
+	text-align:right;
 }
 
 #search fieldset {
 	border: 1px solid #CCC;
-	margin-bottom: 10px;
+	margin-bottom: 1rem;
+	padding:0.5rem;
 }
 
 #map {
@@ -36,32 +84,46 @@ body {
 }
 
 .info-window {
-	width:250px;
-	min-height:50px;
-	text-decoration:none;
-	display:block;
-	color:#000;
+	width: 20rem;
+	min-height: 5rem;
+	text-decoration: none;
+	display: block;
+	color: #000;
 }
+
+.info-window .learn-more {
+	font-weight: bold;
+	color: blue;
+	text-align:right;
+}
+
+.info-window:hover .learn-more {
+	text-decoration: underline;
+}
+
 .info-window div {
-	position:relative;
+	position: relative;
+	background: rgba(0, 0, 0, 0.5);
+	min-height: 166px;
 }
 
 .info-window img {
-	display:block;
-	width:100%;
-	height:auto;
+	display: block;
+	width: 100%;
+	height: auto;
 }
+
 .info-window h1 {
-	position:absolute;
-	width:100%;
-	bottom:0;
-	margin:0;
-	color:#FFF;
-	text-shadow:0px 0px 5px #000;
-	font-size:1.2rem;
-	padding:5px;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	margin: 0;
+	color: #FFF;
+	text-shadow: 0 0 0.5rem #000;
+	font-size: 1.2rem;
+	padding: 0.5rem;
 }
 
 .info-window p:last-child {
-	margin-bottom:0;
+	margin-bottom: 0;
 }

@@ -1,12 +1,15 @@
-/* global require */
+/* global require, process */
 
-require('dotenv').config()
+require('dotenv').config();
 
 const express = require('express');
-const app = express();
-const path = require('path');
+const bodyParser = require('body-parser');
 const fs = require('fs');
 const request = require('request');
+const turf = require('@turf/turf');
+
+const app = express();
+app.use(bodyParser.json());
 
 let cache = {
 	all:null,
@@ -21,15 +24,24 @@ app.get('/', function (req, res) {
 	});
 });
 
-app.get('/data/all', function (req, res) {
-	fetchAll(all => {
+app.get('/geo', function (req, res) {
+	request(`http://ip-api.com/json`, function (err, response, body) {
+		if (err) throw err;
+		res.json(JSON.parse(body));
+	});
+});
+
+app.get('/locations/:id', function (req, res) {
+	fetchById(req.params.id, (all) => {
 		res.json(all);
 	});
 });
 
-app.get('/data/:id', function (req, res) {
-	fetchById(req.params.id, (all) => {
-		res.json(all);
+app.post('/locations/find', function (req, res) {
+	fetchAll(all => {
+		res.json(
+			turf.pointsWithinPolygon(all, turf.polygon(req.body))
+		);
 	});
 });
 
@@ -57,9 +69,15 @@ function fetchAll(callback) {
 	if (cache.all) {
 		callback(cache.all);
 	} else {
-		request('https://www.atlasobscura.com/articles/all-places-in-the-atlas-on-one-map', function (error, response, body) {
+		const url = 'https://www.atlasobscura.com/articles/all-places-in-the-atlas-on-one-map';
+		request(url, function (err, response, body) {
+			if (err) throw err;
 			let matches = body.match(/AtlasObscura\.all_places = (.*?);/);
-			cache.all = JSON.parse(matches[1]);
+			let locations = JSON.parse(matches[1]);
+			let points = locations.map(location => {
+				return turf.point([location.lng, location.lat], {id: location.id});
+			});
+			cache.all = turf.featureCollection(points);
 			callback(cache.all);
 		});
 	}
@@ -69,11 +87,12 @@ function fetchById(id, callback) {
 	if (cache.ids[id]) {
 		callback(cache.ids[id]);
 	} else {
-		request(`https://www.atlasobscura.com/places/${id}.json?place_only=1`, function (error, response, body) {
+		request(`https://www.atlasobscura.com/places/${id}.json?place_only=1`, function (err, response, body) {
+			if (err) throw err;
 			cache.ids[id] = JSON.parse(body);
 			callback(cache.ids[id]);
 		});
 	}
 }
 
-app.listen(process.env.PORT);
+app.listen(process.env.PORT || 80);
