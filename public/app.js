@@ -1,12 +1,7 @@
-/* global google, turf */
-
 let map, directionsService, directionsRenderer, overviewPath, radiusPolygon, markers, infoWindow, userLocation;
 
 let userLocationInitialized = false;
 let mapInitialized = false;
-
-const controller = new AbortController();
-const signal = controller.signal;
 
 function initMap() {
 	mapInitialized = true;
@@ -138,7 +133,7 @@ function init() {
 	
 	if (userLocation) {
 		// if (!document.querySelector('#search .waypoint').value) {
-			document.querySelector('#search input[name="waypoint"]').value = `${userLocation.city}, ${userLocation.regionName}`;
+		document.querySelector('#search input[name="waypoint"]').value = `${userLocation.city}, ${userLocation.regionName}`;
 		// }
 	}
 	
@@ -271,15 +266,15 @@ function onMarkerClick(ev) {
 		.then(response => {
 			return response.json();
 		})
-		.then(json => {
+		.then(location => {
 			infoWindow.setContent(`
-				<a href="${json.url}" target="_blank" class="info-window">
+				<a href="${location.url}" target="_blank" class="info-window">
 					<div>
-						<img src="${json.thumbnail_url_3x2}" />
-						<h1>${json.title}</h1>
+						<img src="${location.thumbnail_url_3x2}" />
+						<h1>${location.title}</h1>
 					</div>
 					
-					<p>${json.subtitle}</p>
+					<p>${location.subtitle}</p>
 					<p class="learn-more">Learn more &rsaquo;</p>
 				</a>
 			`);
@@ -291,8 +286,8 @@ function onMarkerClick(ev) {
 	infoWindow.open(map);
 }
 
-function jsts2googleMaps(object, callback) {
-	let coordArray = object.geometry.coordinates[0];
+function jsts2googleMaps(jsts) {
+	let coordArray = jsts.geometry.coordinates[0];
 	let GMcoords = [];
 	for (let i = 0; i < coordArray.length; i++) {
 		GMcoords.push(new google.maps.LatLng(coordArray[i][1], coordArray[i][0]));
@@ -300,11 +295,9 @@ function jsts2googleMaps(object, callback) {
 	return GMcoords;
 }
 
-
 function findInPaths(polygon, callback) {
 	window.fetch('./locations/find', {
 		method: 'POST',
-		signal: signal,
 		body: JSON.stringify(polygon.geometry.coordinates),
 		headers: {
 			'Content-Type': 'application/json'
@@ -329,7 +322,7 @@ function closeInfoWindow() {
 }
 
 function clearMarkers() {
-	map.data.forEach(function (feature) {
+	map.data.forEach(feature => {
 		map.data.remove(feature);
 	});
 }

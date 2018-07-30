@@ -10,59 +10,61 @@ html, body, #app {
 }
 
 body {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size:62.5%;
+	font-family: 'Roboto', sans-serif;
+	font-size: 62.5%;
+}
+
+input {
+	font-family: 'Roboto', sans-serif;
 }
 
 #app {
 	display: flex;
-	font-size:0.8rem;
 }
 
 #search {
-	padding:0.5rem;
-	width: 20rem;
-	background:#FEFEFE;
-	box-shadow:0 0 10px rgba(0, 0, 0, 0.5);
-	position:relative;
-	z-index:1;
+	padding: 0.5rem;
+	width: 15rem;
+	background: #FEFEFE;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	position: relative;
+	z-index: 1;
 }
 
 .waypoints .form-control:nth-child(-n+2) .btn-waypoint-delete {
-	visibility:hidden;
+	visibility: hidden;
 }
 
 .waypoints .form-control {
-	padding:0 0 0.5rem 0;
+	padding: 0 0 0.5rem 0;
 }
 
 .form-control {
 	display: flex;
-	flex:1 0 0;
+	flex: 1 0 0;
 }
 
 .form-control input[type=text],
 .form-control input[type=range] {
 	vertical-align: middle;
-	flex-grow:1;
-	margin-right:0.5rem;
-	padding:0.2rem;
+	flex-grow: 1;
+	margin-right: 0.5rem;
+	padding: 0.2rem;
 }
 
 .btn {
-	display:inline-block;
-	padding:0.2rem 0.8rem;
-	background-color:deepskyblue;
-	color:#FEFEFE;
-	border:0;
-	text-decoration:none;
-	border-radius:0.2rem;
-	font-size:0.9rem;
-	cursor:pointer;
+	display: inline-block;
+	padding: 0.5rem 0.6rem;
+	background-color: deepskyblue;
+	color: #FEFEFE;
+	border: 0;
+	text-decoration: none;
+	border-radius: 0.2rem;
+	cursor: pointer;
 }
 
 .btn:hover {
-	background-color:lightskyblue;
+	background-color: lightskyblue;
 }
 
 .btn i {
@@ -70,13 +72,18 @@ body {
 }
 
 .actions {
-	text-align:right;
+	text-align: right;
 }
 
-#search fieldset {
+legend {
+	font-size:0.8rem;
+}
+
+fieldset {
 	border: 1px solid #CCC;
 	margin-bottom: 1rem;
-	padding:0.5rem;
+	padding: 0.5rem;
+	border-radius: 0.2rem;
 }
 
 #map {
@@ -89,12 +96,13 @@ body {
 	text-decoration: none;
 	display: block;
 	color: #000;
+	padding: 0.35rem 0;
 }
 
 .info-window .learn-more {
 	font-weight: bold;
 	color: blue;
-	text-align:right;
+	text-align: right;
 }
 
 .info-window:hover .learn-more {
@@ -126,4 +134,12 @@ body {
 
 .info-window p:last-child {
 	margin-bottom: 0;
+}
+
+.btn-waypoint-delete,
+.dot {
+	display:flex;
+	align-items:center;
+	padding:0 0.4rem;
+	color:#CCC;
 }
