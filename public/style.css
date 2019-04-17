@@ -1,3 +1,12 @@
+:root {
+	--spacing: 10px;
+	--padding: 10px;
+	--inner-padding: 6px;
+	--h1:18px;
+	--h2:14px;
+	--text:12px;
+}
+
 *, *:before, *:after {
 	box-sizing: border-box;
 }
@@ -11,11 +20,14 @@ html, body, #app {
 
 body {
 	font-family: 'Roboto', sans-serif;
-	font-size: 62.5%;
+	font-size:var(--text);
 }
 
 input {
 	font-family: 'Roboto', sans-serif;
+	font-size:var(--text);
+	border:1px solid #CCC;
+	border-radius: 2px;
 }
 
 #app {
@@ -23,9 +35,9 @@ input {
 }
 
 #search {
-	padding: 0.5rem;
-	width: 15rem;
-	background: #FEFEFE;
+	padding:var(--spacing);
+	width: 300px;
+	background: #f5f5f5;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	position: relative;
 	z-index: 1;
@@ -36,31 +48,33 @@ input {
 }
 
 .waypoints .form-control {
-	padding: 0 0 0.5rem 0;
+	padding: 0 0 5px 0;
 }
 
 .form-control {
 	display: flex;
 	flex: 1 0 0;
+	position:relative;
 }
 
 .form-control input[type=text],
 .form-control input[type=range] {
 	vertical-align: middle;
 	flex-grow: 1;
-	margin-right: 0.5rem;
-	padding: 0.2rem;
+	padding: var(--inner-padding);
 }
 
 .btn {
 	display: inline-block;
-	padding: 0.5rem 0.6rem;
+	padding: 6px 10px 5px 6px;
 	background-color: deepskyblue;
 	color: #FEFEFE;
 	border: 0;
 	text-decoration: none;
-	border-radius: 0.2rem;
+	border-radius: 2px;
 	cursor: pointer;
+	font-weight:500;
+	font-size:var(--h2);
 }
 
 .btn:hover {
@@ -68,22 +82,31 @@ input {
 }
 
 .btn i {
-	vertical-align: middle;
+	padding:0 2px;
 }
 
 .actions {
 	text-align: right;
 }
 
-legend {
-	font-size:0.8rem;
+fieldset {
+	background:#FFFFFF;
+	border:none;
+	margin-bottom: 10px;
+	padding: var(--padding);
+	border-radius: 2px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-fieldset {
-	border: 1px solid #CCC;
-	margin-bottom: 1rem;
-	padding: 0.5rem;
-	border-radius: 0.2rem;
+fieldset h1 {
+	padding-top:0;
+	margin-top:0;
+	font-size:var(--h1);
+	font-weight:500;
+}
+
+label {
+	font-size:var(--h2);
 }
 
 #map {
@@ -91,12 +114,12 @@ fieldset {
 }
 
 .info-window {
-	width: 20rem;
-	min-height: 5rem;
+	width: 200px;
+	min-height: 50px;
 	text-decoration: none;
 	display: block;
 	color: #000;
-	padding: 0.35rem 0;
+	padding: 5px 0;
 }
 
 .info-window .learn-more {
@@ -127,9 +150,9 @@ fieldset {
 	bottom: 0;
 	margin: 0;
 	color: #FFF;
-	text-shadow: 0 0 0.5rem #000;
-	font-size: 1.2rem;
-	padding: 0.5rem;
+	text-shadow: 0 0 5px #000;
+	font-size: var(--h1);
+	padding: 5px;
 }
 
 .info-window p:last-child {
@@ -140,6 +163,13 @@ fieldset {
 .dot {
 	display:flex;
 	align-items:center;
-	padding:0 0.4rem;
+	padding:0 4px;
 	color:#CCC;
+}
+
+.btn-waypoint-delete {
+	position:absolute;
+	text-decoration:none;
+	top:9px;
+	right:7px;
 }

@@ -1,0 +1,14 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Atlas Obscura Roadtrip Planner
+    link(rel='stylesheet', href='https://use.fontawesome.com/releases/v5.2.0/css/all.css', integrity='sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ', crossorigin='anonymous')
+    link(href='https://fonts.googleapis.com/css?family=Roboto:400,500,700', rel='stylesheet')
+    link(rel='stylesheet', href='style.css')
+  body
+    #app
+      block content
+    script(src='app.js')
+    script(src='https://npmcdn.com/@turf/turf/turf.min.js', async='', defer='')
+    script(src=`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`, async='', defer='')

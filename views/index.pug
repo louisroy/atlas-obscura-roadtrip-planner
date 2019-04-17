@@ -1,0 +1,40 @@
+extends layout
+block content
+    form#search
+        fieldset
+            h1 Waypoints
+            .waypoints
+                .form-control
+                    span.dot
+                        i.fas.fa-circle
+                    input(type='text', name='waypoint')
+                    a.btn-waypoint-delete(href='#')
+                        i.fas.fa-times
+                .form-control
+                    span.dot
+                        i.fas.fa-circle
+                    input(type='text', name='waypoint')
+                    a.btn-waypoint-delete(href='#')
+                        i.fas.fa-times
+            .actions
+                a.btn.btn-add-waypoint(href='#')
+                    i.fas.fa-plus-square
+                    |  Add waypoint
+        fieldset
+            h1 Options
+            label(for='range') Range
+            .form-control
+                input#range(type='range', min='1', max='50', value='10')
+                span.range-value
+                | km
+            label.form-control(for='avoid-highways')
+                input#avoid-highways(type='checkbox', checked='', name='avoid-highways')
+                | 				Avoid highways
+            label.form-control(for='avoid-tolls')
+                input#avoid-tolls(type='checkbox', checked='', name='avoid-tolls')
+                | 				Avoid tolls
+        .actions
+            button.btn.btn-submit(type='submit')
+                i.fas.fa-directions
+                |    Submit
+    #map

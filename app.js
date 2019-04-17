@@ -2,14 +2,19 @@
 
 require('dotenv').config();
 
+const createError = require('http-errors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const request = require('request');
+const path = require('path');
 const turf = require('@turf/turf');
 const app = express();
 
 app.use(bodyParser.json());
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 let cache = {
 	all: null,
@@ -17,11 +22,16 @@ let cache = {
 };
 
 app.get('/', (req, res) => {
+	res.render('index', {
+		apiKey: process.env.GOOGLE_MAPS_API_KEY
+	});
+	/*
 	fs.readFile(__dirname + '/public/index.html', 'utf8', (err, data) => {
 		if (err) throw err;
 		data = data.replace('{{ GOOGLE_MAPS_API_KEY }}', process.env.GOOGLE_MAPS_API_KEY);
 		res.send(data);
 	});
+	*/
 });
 
 app.get('/geo', (req, res) => {
@@ -65,6 +75,11 @@ app.get('/:name', (req, res, next) => {
 	});
 });
 
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+	next(createError(404));
+});
+
 function fetchAll(callback) {
 	if (cache.all) {
 		callback(cache.all);
@@ -95,4 +110,4 @@ function fetchById(id, callback) {
 	}
 }
 
-app.listen(process.env.PORT || 80);
+module.exports = app;
