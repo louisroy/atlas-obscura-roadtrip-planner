@@ -5,7 +5,6 @@ require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const request = require('request');
 const path = require('path');
 const turf = require('@turf/turf');
@@ -25,13 +24,6 @@ app.get('/', (req, res) => {
 	res.render('index', {
 		apiKey: process.env.GOOGLE_MAPS_API_KEY
 	});
-	/*
-	fs.readFile(__dirname + '/public/index.html', 'utf8', (err, data) => {
-		if (err) throw err;
-		data = data.replace('{{ GOOGLE_MAPS_API_KEY }}', process.env.GOOGLE_MAPS_API_KEY);
-		res.send(data);
-	});
-	*/
 });
 
 app.get('/geo', (req, res) => {
