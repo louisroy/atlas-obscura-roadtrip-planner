@@ -26,13 +26,6 @@ app.get('/', (req, res) => {
 	});
 });
 
-app.get('/geo', (req, res) => {
-	request(`http://ip-api.com/json`, (err, response, body) => {
-		if (err) throw err;
-		res.json(JSON.parse(body));
-	});
-});
-
 app.get('/locations/:id', (req, res) => {
 	fetchById(req.params.id, (all) => {
 		res.json(all);
