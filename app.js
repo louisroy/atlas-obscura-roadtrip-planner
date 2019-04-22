@@ -11,7 +11,7 @@ const turf = require('@turf/turf');
 const app = express();
 
 app.use (function (req, res, next) {
-	if (req.secure) {
+	if (req.secure || req.headers["x-forwarded-proto"] === "http") {
 		res.redirect('http://' + req.headers.host + req.url);
 	} else {
 		next();
