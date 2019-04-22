@@ -10,6 +10,14 @@ const path = require('path');
 const turf = require('@turf/turf');
 const app = express();
 
+app.use (function (req, res, next) {
+	if (req.secure) {
+		res.redirect('http://' + req.headers.host + req.url);
+	} else {
+		next();
+	}
+});
+
 app.use(bodyParser.json());
 
 app.set('views', path.join(__dirname, 'views'));
