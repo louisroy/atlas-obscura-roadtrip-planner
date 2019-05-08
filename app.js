@@ -30,6 +30,7 @@ let cache = {
 
 app.get('/', (req, res) => {
 	res.render('index', {
+		userIp: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
 		apiKey: process.env.GOOGLE_MAPS_API_KEY
 	});
 });
