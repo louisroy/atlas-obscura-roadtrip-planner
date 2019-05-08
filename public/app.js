@@ -10,12 +10,12 @@ function initMap() {
 	}
 }
 
-window.fetch('http://ip-api.com/json')
+window.fetch(`https://ip.nf/me.json`)
 	.then(response => {
 		return response.json();
 	})
 	.then(json => {
-		userLocation = json;
+		userLocation = json.ip;
 	})
 	.then(() => {
 		userLocationInitialized = true;
@@ -29,7 +29,7 @@ function init() {
 	directionsRenderer = new google.maps.DirectionsRenderer();
 	
 	map = new google.maps.Map(document.querySelector('#map'), {
-		center: (userLocation) ? {lat: userLocation.lat, lng: userLocation.lon} : {lat: -34.397, lng: 150.644},
+		center: (userLocation) ? {lat: userLocation.latitude, lng: userLocation.longitude} : {lat: -34.397, lng: 150.644},
 		zoom: 8,
 		styles: [
 			{elementType: 'geometry', stylers: [{color: '#242f3e'}]},
@@ -133,7 +133,7 @@ function init() {
 	
 	if (userLocation) {
 		// if (!document.querySelector('#search .waypoint').value) {
-		document.querySelector('#search input[name="waypoint"]').value = `${userLocation.city}, ${userLocation.regionName}`;
+		document.querySelector('#search input[name="waypoint"]').value = `${userLocation.city}, ${userLocation.country}`;
 		// }
 	}
 	

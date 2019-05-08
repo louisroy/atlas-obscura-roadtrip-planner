@@ -10,14 +10,6 @@ const path = require('path');
 const turf = require('@turf/turf');
 const app = express();
 
-app.use (function (req, res, next) {
-	if (req.secure || req.headers["x-forwarded-proto"] === "https") {
-		res.redirect('http://' + req.headers.host + req.url);
-	} else {
-		next();
-	}
-});
-
 app.use(bodyParser.json());
 
 app.set('views', path.join(__dirname, 'views'));
@@ -30,7 +22,6 @@ let cache = {
 
 app.get('/', (req, res) => {
 	res.render('index', {
-		userIp: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
 		apiKey: process.env.GOOGLE_MAPS_API_KEY
 	});
 });
