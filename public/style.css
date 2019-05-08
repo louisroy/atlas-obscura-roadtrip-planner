@@ -114,7 +114,7 @@ label {
 }
 
 .info-window {
-	width: 300px;
+	max-width: 300px;
 	min-height: 50px;
 	text-decoration: none;
 	display: block;
@@ -136,12 +136,14 @@ label {
 	position: relative;
 	background: rgba(0, 0, 0, 0.5);
 	min-height: 166px;
+	background-size: cover;
 }
 
 .info-window img {
 	display: block;
 	width: 100%;
 	height: auto;
+	visibility:hidden;
 }
 
 .info-window h1 {
