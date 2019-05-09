@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('..');
 var debug = require('debug')('atlas-obscura-roadtrip-planner:server');
 var http = require('http');
 
