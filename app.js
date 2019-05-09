@@ -5,7 +5,7 @@ require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const bodyParser = require('body-parser');
-const request = require('request');
+const request = require('request-promise');
 const path = require('path');
 const turf = require('@turf/turf');
 const app = express();
@@ -20,27 +20,23 @@ let cache = {
 	ids: {}
 };
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 	res.render('index', {
 		apiKey: process.env.GOOGLE_MAPS_API_KEY
 	});
 });
 
-app.get('/locations/:id', (req, res) => {
-	fetchById(req.params.id, (all) => {
-		res.json(all);
-	});
+app.get('/locations/:id', async (req, res) => {
+	res.json(await fetchById(req.params.id));
 });
 
-app.post('/locations/find', (req, res) => {
-	fetchAll(all => {
-		res.json(
-			turf.pointsWithinPolygon(all, turf.polygon(req.body))
-		);
-	});
+app.post('/locations/find', async (req, res) => {
+	res.json(
+		turf.pointsWithinPolygon(await fetchAll(), turf.polygon(req.body))
+	);
 });
 
-app.get('/:name', (req, res, next) => {
+app.get('/:name', async (req, res, next) => {
 	let options = {
 		root: __dirname + '/public/',
 		dotfiles: 'deny',
@@ -51,13 +47,7 @@ app.get('/:name', (req, res, next) => {
 	};
 	
 	let fileName = req.params.name;
-	res.sendFile(fileName, options, (err) => {
-		if (err) {
-			next(err);
-		} else {
-			console.log('Sent:', fileName);
-		}
-	});
+	await res.sendFile(fileName, options);
 });
 
 // catch 404 and forward to error handler
@@ -65,34 +55,27 @@ app.use((req, res, next) => {
 	next(createError(404));
 });
 
-function fetchAll(callback) {
-	if (cache.all) {
-		callback(cache.all);
-	} else {
+async function fetchAll() {
+	if (!cache.all) {
 		const url = 'https://www.atlasobscura.com/articles/all-places-in-the-atlas-on-one-map';
-		request(url, (err, response, body) => {
-			if (err) throw err;
-			let matches = body.match(/AtlasObscura\.all_places = (.*?);/);
-			let locations = JSON.parse(matches[1]);
-			let points = locations.map(location => {
-				return turf.point([location.lng, location.lat], {id: location.id});
-			});
-			cache.all = turf.featureCollection(points);
-			callback(cache.all);
+		let html = await request(url); //, (err, response, body) => {
+		let matches = html.match(/AtlasObscura\.all_places = (.*?);/);
+		let locations = JSON.parse(matches[1]);
+		let points = locations.map(location => {
+			return turf.point([location.lng, location.lat], {id: location.id});
 		});
+		cache.all = turf.featureCollection(points);
 	}
+
+	return cache.all;
 }
 
-function fetchById(id, callback) {
-	if (cache.ids[id]) {
-		callback(cache.ids[id]);
-	} else {
-		request(`https://www.atlasobscura.com/places/${id}.json?place_only=1`, (err, response, body) => {
-			if (err) throw err;
-			cache.ids[id] = JSON.parse(body);
-			callback(cache.ids[id]);
-		});
+async function fetchById(id) {
+	if (!cache.ids[id]) {
+		let json = await request(`https://www.atlasobscura.com/places/${id}.json?place_only=1`);
+		cache.ids[id] = JSON.parse(json);
 	}
+	return cache.ids[id];
 }
 
 module.exports = app;

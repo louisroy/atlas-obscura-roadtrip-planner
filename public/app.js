@@ -1,35 +1,14 @@
 let map, directionsService, directionsRenderer, overviewPath, radiusPolygon, markers, infoWindow, userLocation;
 
-let userLocationInitialized = false;
-let mapInitialized = false;
+async function init() {
+    let geoResponse = await fetch(`https://ip.nf/me.json`);
+    userLocation = await geoResponse.json();
 
-function initMap() {
-    mapInitialized = true;
-    if (userLocationInitialized) {
-        init();
-    }
-}
-
-window.fetch(`https://ip.nf/me.json`)
-    .then(response => {
-        return response.json();
-    })
-    .then(json => {
-        userLocation = json.ip;
-    })
-    .then(() => {
-        userLocationInitialized = true;
-        if (mapInitialized) {
-            init();
-        }
-    });
-
-function init() {
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
 
     map = new google.maps.Map(document.querySelector('#map'), {
-        center: (userLocation) ? {lat: userLocation.latitude, lng: userLocation.longitude} : {
+        center: (userLocation) ? {lat: userLocation.ip.latitude, lng: userLocation.ip.longitude} : {
             lat: -34.397,
             lng: 150.644
         },
@@ -136,7 +115,7 @@ function init() {
 
     if (userLocation) {
         // if (!document.querySelector('#search .waypoint').value) {
-        document.querySelector('#search input[name="waypoint"]').value = `${userLocation.city}, ${userLocation.country}`;
+        document.querySelector('#search input[name="waypoint"]').value = `${userLocation.ip.city}, ${userLocation.ip.country}`;
         // }
     }
 
@@ -161,7 +140,7 @@ function init() {
         onHashLoad();
     }
 
-    onMapChange();
+    await onMapChange();
 }
 
 function onAddWaypoint(ev, value) {
@@ -209,20 +188,20 @@ function onSearchSubmit(ev) {
         travelMode: google.maps.TravelMode.DRIVING,
     };
 
-    directionsService.route(options, (result, status) => {
+    directionsService.route(options, async (result, status) => {
         if (status === 'OK') {
             directionsRenderer.setDirections(result);
 
             overviewPath = result.routes[0].overview_path;
 
-            onMapChange();
+            await onMapChange();
         } else {
             alert(`Unable to determine route for ${route.map(obj => obj.location).join(' -> ')}.`);
         }
     });
 }
 
-function onMapChange() {
+async function onMapChange() {
     let range = parseInt(document.querySelector('#range').value);
 
     document.querySelector('.range-value').textContent = range.toString();
@@ -258,13 +237,12 @@ function onMapChange() {
 
     radiusPolygon.setMap(map);
 
-    findInPaths(polygon, locations => {
-        clearMarkers();
-        markers = map.data.addGeoJson(locations);
-    });
+    let locations = await findInPaths(polygon);
+    clearMarkers();
+    markers = map.data.addGeoJson(locations);
 }
 
-function onMarkerClick(ev) {
+async function onMarkerClick(ev) {
     closeInfoWindow();
 
     infoWindow = new google.maps.InfoWindow({
@@ -275,26 +253,20 @@ function onMarkerClick(ev) {
         )
     });
 
-    window.fetch(`./locations/${ev.feature.getProperty('id')}`)
-        .then(response => {
-            return response.json();
-        })
-        .then(location => {
-            infoWindow.setContent(`
-				<a href="${location.url}" target="_blank" class="info-window">
-					<div style="background-image:url(${location.thumbnail_url_3x2})">
-						<img src="${location.thumbnail_url_3x2}" />
-						<h1>${location.title}</h1>
-					</div>
-					
-					<p>${location.subtitle}</p>
-					<p class="learn-more">Learn more &rsaquo;</p>
-				</a>
-			`);
-        })
-        .catch(function (ex) {
+    let response = await fetch(`./locations/${ev.feature.getProperty('id')}`);
+    let location = await response.json();
 
-        });
+    infoWindow.setContent(`
+        <a href="${location.url}" target="_blank" class="info-window">
+            <div style="background-image:url(${location.thumbnail_url_3x2})">
+                <img src="${location.thumbnail_url_3x2}" />
+                <h1>${location.title}</h1>
+            </div>
+            
+            <p>${location.subtitle}</p>
+            <p class="learn-more">Learn more &rsaquo;</p>
+        </a>
+    `);
 
     infoWindow.open(map);
 }
@@ -308,23 +280,15 @@ function jsts2googleMaps(jsts) {
     return GMcoords;
 }
 
-function findInPaths(polygon, callback) {
-    window.fetch('./locations/find', {
+async function findInPaths(polygon) {
+    let response = await window.fetch('./locations/find', {
         method: 'POST',
         body: JSON.stringify(polygon.geometry.coordinates),
         headers: {
             'Content-Type': 'application/json'
         }
-    })
-        .then((response) => {
-            return response.json();
-        })
-        .then((json) => {
-            callback(json);
-        })
-        .catch(function (ex) {
-
-        });
+    });
+    return await response.json();
 }
 
 function closeInfoWindow() {

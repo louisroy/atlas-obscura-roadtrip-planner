@@ -1,9 +1,9 @@
 {
   "name": "atlas-obscura-roadtrip-planner",
   "version": "1.0.0",
-  "description": "",
+  "description": "Small webapp that lets you find Atlas Obscura locations along a Google Maps route.",
   "main": "app.js",
-  "author": "",
+  "author": "Louis Roy",
   "license": "ISC",
   "dependencies": {
     "@turf/buffer": "^5.1.5",
@@ -14,7 +14,7 @@
     "express": "^4.16.3",
     "http-errors": "^1.7.2",
     "pug": "^2.0.3",
-    "request": "^2.87.0"
+    "request-promise": "^4.2.4"
   },
   "scripts": {
     "start": "node ./bin/www"
