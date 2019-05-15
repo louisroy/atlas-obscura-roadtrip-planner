@@ -136,6 +136,14 @@ async function init() {
         }
     });
 
+    new Sortable.default(document.querySelectorAll('.waypoints'), {
+        draggable: '.form-control',
+        mirror: {
+            appendTo: '.waypoints',
+            constrainDimensions: true,
+        },
+    });
+
     if (window.location.hash.match(/#(.*?)/)) {
         onHashLoad();
     }
@@ -337,12 +345,12 @@ function onHashLoad() {
 function onSearchChange(ev) {
     let $form = document.querySelector('#search');
     let formValues = {
-        waypoints:Array.from($form['waypoint']).map(input => {
+        waypoints: Array.from($form['waypoint']).map(input => {
             return input.value;
         }),
-        range:$form['range'].value,
-        avoidTolls:$form['avoid-tolls'].checked,
-        avoidHighways:$form['avoid-highways'].checked
+        range: $form['range'].value,
+        avoidTolls: $form['avoid-tolls'].checked,
+        avoidHighways: $form['avoid-highways'].checked
     };
     window.location.hash = '#' + btoa(JSON.stringify(formValues));
 }
