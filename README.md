@@ -9,7 +9,8 @@ Small webapp that lets you find [Atlas Obscura](https://www.atlasobscura.com/) l
 I was roadtripping in California with my girlfriend. We used Atlas Obscura to find cool and unusual spots to visit. Unfortunately, Atlas Obscura's website isn't really made to plan a roadtrip. So I figured I'd fix that by mixing Google Maps Directions Services with the contents of Atlas Obscura's website.
 
 # Requirements
-- [Node.js](https://nodejs.org)
+- [Node.js 10.15 or higher](https://nodejs.org)
+- [Google Maps API Key](https://developers.google.com/maps/documentation/javascript/get-api-key)
 
 # Installation
 
