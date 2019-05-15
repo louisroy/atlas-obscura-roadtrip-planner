@@ -5,14 +5,14 @@ block content
             h1 Waypoints
             .waypoints
                 .form-control
-                    span.dot
-                        i.fas.fa-circle
+                    a.reorder(href='#')
+                        i.fas.fa-ellipsis-h
                     input(type='text', name='waypoint')
                     a.btn-waypoint-delete(href='#')
                         i.fas.fa-times
                 .form-control
-                    span.dot
-                        i.fas.fa-circle
+                    a.reorder(href='#')
+                        i.fas.fa-ellipsis-h
                     input(type='text', name='waypoint')
                     a.btn-waypoint-delete(href='#')
                         i.fas.fa-times
@@ -25,8 +25,9 @@ block content
             label(for='range') Range
             .form-control
                 input#range(type='range', min='1', max='50', value='10', name='range')
-                span.range-value
-                | km
+                span.range
+                    span.range-value
+                    |   km
             label.form-control(for='avoid-highways')
                 input#avoid-highways(type='checkbox', checked='', name='avoid-highways')
                 | 				Avoid highways
