@@ -1,6 +1,6 @@
 # Atlas Obscura Roadtrip Planner
 
-Small webapp that lets you find [Atlas Obscura](https://www.atlasobscura.com/) locations along a [Google Maps](https://developers.google.com/maps/documentation/) route. Still a work in progress, kinda.
+Small webapp that helps you find [Atlas Obscura](https://www.atlasobscura.com/) locations along a [Google Maps](https://developers.google.com/maps/documentation/) route. Still a work in progress, kinda.
 
 ![Screenshot](https://www.louisroy.net/atlas-obscura-roadtrip-planner/public/screenshot.png)
 
