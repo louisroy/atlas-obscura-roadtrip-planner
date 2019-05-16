@@ -8,35 +8,35 @@ const bodyParser = require('body-parser');
 const request = require('request-promise');
 const path = require('path');
 const turf = require('@turf/turf');
-const index = express();
+const app = express();
 
-index.use(bodyParser.json());
+app.use(bodyParser.json());
 
-index.set('views', path.join(__dirname, 'views'));
-index.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 let cache = {
 	all: null,
 	ids: {}
 };
 
-index.get('/', async (req, res) => {
+app.get('/', async (req, res) => {
 	res.render('index', {
 		apiKey: process.env.GOOGLE_MAPS_API_KEY
 	});
 });
 
-index.get('/locations/:id', async (req, res) => {
+app.get('/locations/:id', async (req, res) => {
 	res.json(await fetchById(req.params.id));
 });
 
-index.post('/locations/find', async (req, res) => {
+app.post('/locations/find', async (req, res) => {
 	res.json(
 		turf.pointsWithinPolygon(await fetchAll(), turf.polygon(req.body))
 	);
 });
 
-index.get('/:name', async (req, res, next) => {
+app.get('/:name', async (req, res, next) => {
 	let options = {
 		root: __dirname + '/public/',
 		dotfiles: 'deny',
@@ -51,7 +51,7 @@ index.get('/:name', async (req, res, next) => {
 });
 
 // catch 404 and forward to error handler
-index.use((req, res, next) => {
+app.use((req, res, next) => {
 	next(createError(404));
 });
 
@@ -78,4 +78,4 @@ async function fetchById(id) {
 	return cache.ids[id];
 }
 
-module.exports = index;
+module.exports = app;
