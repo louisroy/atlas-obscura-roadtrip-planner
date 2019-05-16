@@ -138,6 +138,7 @@ async function init() {
 
     new Sortable.default(document.querySelectorAll('.waypoints'), {
         draggable: '.form-control',
+        handle: '.reorder',
         mirror: {
             appendTo: '.waypoints',
             constrainDimensions: true,
