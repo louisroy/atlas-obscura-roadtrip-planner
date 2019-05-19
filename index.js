@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 async function fetchAll() {
 	if (!cache.all) {
 		const url = 'https://www.atlasobscura.com/articles/all-places-in-the-atlas-on-one-map';
-		let html = await request(url); //, (err, response, body) => {
+		let html = await request(url);
 		let matches = html.match(/AtlasObscura\.all_places = (.*?);/);
 		let locations = JSON.parse(matches[1]);
 		let points = locations.map(location => {
