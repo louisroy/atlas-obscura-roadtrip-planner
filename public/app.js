@@ -1,14 +1,14 @@
 let map, directionsService, directionsRenderer, overviewPath, radiusPolygon, markers, infoWindow, userLocation;
 
 async function init() {
-    let geoResponse = await fetch(`https://ip.nf/me.json`);
+    let geoResponse = await fetch(`https://get.geojs.io/v1/ip/geo.json`);
     userLocation = await geoResponse.json();
 
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
 
     map = new google.maps.Map(document.querySelector('#map'), {
-        center: (userLocation) ? {lat: userLocation.ip.latitude, lng: userLocation.ip.longitude} : {
+        center: (userLocation) ? {lat: parseFloat(userLocation.latitude), lng: parseFloat(userLocation.longitude)} : {
             lat: -34.397,
             lng: 150.644
         },
@@ -35,9 +35,7 @@ async function init() {
     directionsRenderer.setMap(map);
 
     if (userLocation) {
-        // if (!document.querySelector('#search .waypoint').value) {
-        document.querySelector('#search input[name="waypoint"]').value = `${userLocation.ip.city}, ${userLocation.ip.country}`;
-        // }
+        document.querySelector('#search input[name="waypoint"]').value = `${userLocation.city}, ${userLocation.region}, ${userLocation.country_code}`;
     }
 
     document.querySelector('#search').addEventListener('submit', onSearchSubmit);
