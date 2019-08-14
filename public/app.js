@@ -13,6 +13,7 @@ async function init() {
             lng: 150.644
         },
         zoom: 8,
+        fullscreenControl:false,
         styles: await (await fetch('./style.json')).json()
     });
 

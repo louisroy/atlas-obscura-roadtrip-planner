@@ -9,6 +9,15 @@ html(lang='en')
   body
     #app
       block content
+    a(href='https://github.com/louisroy/atlas-obscura-roadtrip-planner')
+      img(
+        width='149',
+        height='149',
+        src='https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149',
+        class='github-ribbon attachment-full size-full',
+        alt='Fork me on GitHub',
+        data-recalc-dims='1'
+      )
     script(src='app.js')
     script(src='https://cdn.jsdelivr.net/combine/npm/@turf/turf/turf.min.js,npm/@shopify/draggable@1.0.0-beta.6/lib/sortable.js', async='', defer='')
     script(src=`https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=init`, async='', defer='')

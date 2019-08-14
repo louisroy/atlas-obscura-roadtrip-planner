@@ -200,3 +200,9 @@ label {
     padding: 0px 6px;
     color: #CCC;
 }
+
+.github-ribbon {
+    position:absolute;
+    top:0;
+    right:0;
+}
