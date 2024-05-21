@@ -1,18 +1,22 @@
 let map, directionsService, directionsRenderer, overviewPath, radiusPolygon, markers, infoWindow, userLocation;
 
 async function init() {
-    let geoResponse = await fetch(`https://get.geojs.io/v1/ip/geo.json`);
-    userLocation = await geoResponse.json();
+    try {
+        let geoResponse = await fetch(`https://get.geojs.io/v1/ip/geo.json`);
+        userLocation = await geoResponse.json();
+    } catch (err) {
+        console.log("Could not determine user location.");
+    }
 
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
 
     map = new google.maps.Map(document.querySelector('#map'), {
         center: (userLocation) ? {lat: parseFloat(userLocation.latitude), lng: parseFloat(userLocation.longitude)} : {
-            lat: -34.397,
-            lng: 150.644
+            lat: 54.5260,
+            lng: -105.2551
         },
-        zoom: 8,
+        zoom: (userLocation)? 8 : 3,
         fullscreenControl:false,
         styles: await (await fetch('./style.json')).json()
     });
@@ -76,6 +80,7 @@ function onAddWaypoint(ev, value) {
     ev && ev.preventDefault();
     let $waypoints = document.querySelector('.waypoints');
     let $clone = $waypoints.querySelector('.form-control').cloneNode(true);
+    $clone.querySelector('input').removeAttribute('placeholder');
     $clone.querySelector('input').value = value || '';
     $waypoints.appendChild($clone);
 }
