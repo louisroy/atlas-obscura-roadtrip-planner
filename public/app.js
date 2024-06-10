@@ -60,6 +60,9 @@ async function init() {
         }
     });
 
+    document.querySelector('.btn-export-geojson').addEventListener('click', onExportGeojson);
+    document.querySelector('.btn-export-kml').addEventListener('click', onExportKML);
+
     new Sortable.default(document.querySelectorAll('.waypoints'), {
         draggable: '.form-control',
         handle: '.reorder',
@@ -91,6 +94,43 @@ function onDeleteWaypoint(ev) {
     ev.target.parentNode.parentNode.parentNode.removeChild(ev.target.parentNode.parentNode);
 
     onSearchChange(ev);
+}
+
+async function onExportGeojson(ev) {
+    ev.preventDefault();
+
+    let {polygon} = await extractPaths();
+
+    window.fetch('./locations/find', {
+        method: 'POST',
+        body: JSON.stringify(polygon.geometry.coordinates),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then( res => res.blob() )
+        .then( blob => {
+            const file = window.URL.createObjectURL(blob);
+            window.location.assign(file);
+        });
+}
+
+async function onExportKML(ev) {
+    let {polygon} = await extractPaths();
+
+    window.fetch('./locations/find', {
+        method: 'POST',
+        body: JSON.stringify(polygon.geometry.coordinates),
+        headers: {
+            'Accept': 'application/vnd.google-earth.kml+xml',
+            'Content-Type': 'application/json'
+        }
+    })
+        .then( res => res.blob() )
+        .then( blob => {
+            const file = window.URL.createObjectURL(blob);
+            window.location.assign(file);
+        });
 }
 
 function onCheckChange(ev) {
@@ -135,14 +175,10 @@ function onSearchSubmit(ev) {
     });
 }
 
-async function onMapChange() {
+async function extractPaths() {
     let range = parseInt(document.querySelector('#range').value);
 
     document.querySelector('.range-value').textContent = range.toString();
-
-    if (!overviewPath) return null;
-
-    closeInfoWindow();
 
     let overviewPathGeo = [];
 
@@ -155,6 +191,17 @@ async function onMapChange() {
     let lineString = turf.lineString(overviewPathGeo, {name: 'line 1'});
     let polygon = turf.buffer(lineString, range, {units: 'miles'});
     let paths = jsts2googleMaps(polygon);
+    let locations = await findInPaths(polygon);
+    console.log(polygon)
+    return {polygon, paths, locations};
+}
+
+async function onMapChange() {
+    if (!overviewPath) return null;
+
+    closeInfoWindow();
+
+    let {paths, locations} = await extractPaths();
 
     if (radiusPolygon) {
         radiusPolygon.setMap(null);
@@ -171,7 +218,6 @@ async function onMapChange() {
 
     radiusPolygon.setMap(map);
 
-    let locations = await findInPaths(polygon);
     clearMarkers();
     markers = map.data.addGeoJson(locations);
 }

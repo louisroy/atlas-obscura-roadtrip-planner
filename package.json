@@ -15,12 +15,12 @@
     "http-errors": "^1.7.3",
     "pug": "^3.0.1",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "tokml": "^0.4.0"
   },
   "scripts": {
     "start": "node ./bin/www"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/louisroy/atlas-obscura-roadtrip-planner.git"

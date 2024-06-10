@@ -106,6 +106,9 @@ input[type=text]:focus {
     text-align: right;
 }
 
+.exports {
+}
+
 fieldset {
     background: var(--light);
     border: none;

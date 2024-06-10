@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const request = require('request-promise');
 const path = require('path');
 const turf = require('@turf/turf');
+const tokml = require('tokml');
 const app = express();
 
 app.use(bodyParser.json());
@@ -31,9 +32,17 @@ app.get('/locations/:id', async (req, res) => {
 });
 
 app.post('/locations/find', async (req, res) => {
-	res.json(
-		turf.pointsWithinPolygon(await fetchAll(), turf.polygon(req.body))
-	);
+	let points = turf.pointsWithinPolygon(await fetchAll(), turf.polygon(req.body));
+	if (req.header("Accept").match(/kml/)) {
+		res.set('Content-Type', req.header("Accept"));
+		res.send(
+			tokml(points)
+		);
+	} else {
+		res.json(
+			points
+		);
+	}
 });
 
 app.get('/:name', async (req, res, next) => {
