@@ -1,6 +1,28 @@
 let map, directionsService, directionsRenderer, overviewPath, radiusPolygon, markers, infoWindow, userLocation;
 
+let cachedLocations = undefined
+let cachedIds = {}
+
+let isPageLoaded = false
+let isMapLoaded = false
+let isAppInitialized = false
+
+window.addEventListener('load', function () {
+    isPageLoaded = true
+    if (isMapLoaded && !isAppInitialized) {
+        init()
+    }
+})
+
+function mapLoaded() {
+    isMapLoaded = true
+    if (isPageLoaded && !isAppInitialized) {
+        init()
+    }
+}
+
 async function init() {
+    isAppInitialized = true
     try {
         let geoResponse = await fetch(`https://get.geojs.io/v1/ip/geo.json`);
         userLocation = await geoResponse.json();
@@ -101,36 +123,35 @@ async function onExportGeojson(ev) {
 
     let {polygon} = await extractPaths();
 
-    window.fetch('./locations/find', {
-        method: 'POST',
-        body: JSON.stringify(polygon.geometry.coordinates),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then( res => res.blob() )
-        .then( blob => {
-            const file = window.URL.createObjectURL(blob);
-            window.location.assign(file);
-        });
+    let points = turf.pointsWithinPolygon(await fetchAll(), polygon);
+
+    const geojson = JSON.stringify(points, null, 2);
+
+    // Create a blob and download link
+    const blob = new Blob([geojson], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'output.geojson';
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 async function onExportKML(ev) {
     let {polygon} = await extractPaths();
 
-    window.fetch('./locations/find', {
-        method: 'POST',
-        body: JSON.stringify(polygon.geometry.coordinates),
-        headers: {
-            'Accept': 'application/vnd.google-earth.kml+xml',
-            'Content-Type': 'application/json'
-        }
-    })
-        .then( res => res.blob() )
-        .then( blob => {
-            const file = window.URL.createObjectURL(blob);
-            window.location.assign(file);
-        });
+    let points = turf.pointsWithinPolygon(await fetchAll(), polygon);
+
+    let kml = tokml(points);
+
+    // Create a blob and download link
+    const blob = new Blob([kml], { type: 'application/vnd.google-earth.kml+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'output.kml';
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 function onCheckChange(ev) {
@@ -192,7 +213,6 @@ async function extractPaths() {
     let polygon = turf.buffer(lineString, range, {units: 'miles'});
     let paths = jsts2googleMaps(polygon);
     let locations = await findInPaths(polygon);
-    console.log(polygon)
     return {polygon, paths, locations};
 }
 
@@ -222,6 +242,15 @@ async function onMapChange() {
     markers = map.data.addGeoJson(locations);
 }
 
+async function fetchById(id) {
+    if (!cachedIds[id]) {
+        let response = await fetch(`https://www.atlasobscura.com/places/${id}.json?place_only=1`)
+        let json  = await response.json()
+        cachedIds[id] = json
+    }
+    return cachedIds[id]
+}
+
 async function onMarkerClick(ev) {
     closeInfoWindow();
 
@@ -233,8 +262,7 @@ async function onMarkerClick(ev) {
         )
     });
 
-    let response = await fetch(`./locations/${ev.feature.getProperty('id')}`);
-    let location = await response.json();
+    let location = await fetchById(ev.feature.getProperty('id'))
 
     infoWindow.setContent(`
         <a href="${location.url}" target="_blank" class="info-window">
@@ -260,15 +288,32 @@ function jsts2googleMaps(jsts) {
     return GMcoords;
 }
 
-async function findInPaths(polygon) {
-    let response = await window.fetch('./locations/find', {
-        method: 'POST',
-        body: JSON.stringify(polygon.geometry.coordinates),
-        headers: {
-            'Content-Type': 'application/json'
+async function fetchAll() {
+    if (!cachedLocations) {
+        const response = await fetch('https://www.atlasobscura.com/articles/all-places-in-the-atlas-on-one-map')
+        const html  = await response.text()
+
+        let matches = html.match(/AtlasObscura\.all_places = (.*?);/);
+
+        if (!matches) {
+            throw new Error('Could not extract places from HTML')
         }
-    });
-    return await response.json();
+
+        locations = JSON.parse(matches[1]);
+
+        let points = locations.map(location => {
+            return turf.point([location.lng, location.lat], {id: location.id});
+        });
+        cachedLocations = turf.featureCollection(points);
+    }
+
+    return cachedLocations
+}
+
+async function findInPaths(polygon) {
+    let points = turf.pointsWithinPolygon(await fetchAll(), polygon);
+
+    return points
 }
 
 function closeInfoWindow() {
@@ -287,7 +332,6 @@ function clearMarkers() {
 function onHashLoad() {
     let $form = document.querySelector('#search');
     let formValues = JSON.parse(atob(window.location.hash.replace(/^#/, '')));
-    console.log(formValues);
 
     formValues.waypoints.forEach((waypoint, index) => {
         if (index < 2) {

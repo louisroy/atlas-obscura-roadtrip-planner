@@ -1,0 +1,15 @@
+<script type="module">
+    const response = await fetch('https://www.atlasobscura.com/articles/all-places-in-the-atlas-on-one-map')
+    const html  = await response.text()
+
+    let matches = html.match(/AtlasObscura\.all_places = (.*?);/);
+
+
+    if (!matches) {
+        console.debug(html)
+        throw new Error('Could not extract places from HTML')
+    }
+    let locations = JSON.parse(matches[1]);
+
+    console.debug(locations)
+</script>
